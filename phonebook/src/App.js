@@ -7,9 +7,9 @@ import noteService from "./services/persons.js"
 
 
 const App = () => {
-const [persons, setPersons] = useState([])
+  const [persons, setPersons] = useState([])
 
-useEffect(() => {
+  useEffect(() => {
   console.log(persons)
   noteService
     .getAll()
@@ -18,10 +18,10 @@ useEffect(() => {
       console.log('data', initialNames)
       
     })
-}, [])
+  }, [])
 
 
-console.log('persons', persons)
+  console.log('persons', persons)
 
 
   const [newName, setNewName] = useState('')
@@ -49,6 +49,17 @@ console.log('persons', persons)
   console.log(event.target.value)
   setNewNumber(event.target.value)
   }
+
+  const deleteperson = (id, name) => () => {
+     console.log("DELETEPERSON ACTION ID NAME", id, name)
+     if(window.confirm("Delete " + name + "?")) {
+      noteService
+        .deleteperson(id)
+        .then(() => {
+        setPersons(persons.filter(person => person.name !== name))
+     })
+    }
+  }
    
   const addName = (event) => {
     event.preventDefault()
@@ -70,7 +81,7 @@ console.log('persons', persons)
     })
    
     
-    //setPersons(persons.concat(nameObject))
+    
     setNewName('')
     setNewNumber('')
     setFilter('')
@@ -81,7 +92,7 @@ console.log('persons', persons)
       <h2>Phonebook</h2>
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <PersonForm addName={addName} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} deleteperson={deleteperson} />
     </div>
   )
 }
