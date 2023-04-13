@@ -2,24 +2,27 @@ import { useState, useEffect } from 'react'
 import  Filter  from "./Filter.js"
 import PersonForm from "./PersonForm.js"
 import Persons from "./Persons.js"
-import axios from 'axios'
+import noteService from "./services/persons.js"
 
 
 
 const App = () => {
-  const [persons, setPersons] = useState([])
+const [persons, setPersons] = useState([])
 
-const hook = () => {
-  console.log('effect')
-  axios
-    .get('http://localhost:3001/persons')
-    .then(response => {
-      console.log('promise fulfilled')
-      setPersons(response.data)
+useEffect(() => {
+  console.log(persons)
+  noteService
+    .getAll()
+    .then(initialNames => {
+      setPersons(initialNames)
+      console.log('data', initialNames)
+      
     })
-}
+}, [])
 
-useEffect(hook, [])
+
+console.log('persons', persons)
+
 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
@@ -60,11 +63,12 @@ useEffect(hook, [])
       number: newNumber
       }
 
-    axios
-    .post('http://localhost:3001/persons', nameObject)
-    .then(response => {
-      setPersons(persons.concat(response.data))
+    noteService
+      .create(nameObject)
+      .then(returnedName => {
+      setPersons(persons.concat(returnedName))
     })
+   
     
     setPersons(persons.concat(nameObject))
     setNewName('')
