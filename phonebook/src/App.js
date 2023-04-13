@@ -70,7 +70,7 @@ console.log('persons', persons)
     })
    
     
-    setPersons(persons.concat(nameObject))
+    //setPersons(persons.concat(nameObject))
     setNewName('')
     setNewNumber('')
     setFilter('')
