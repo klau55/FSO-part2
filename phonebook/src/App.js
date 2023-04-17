@@ -3,6 +3,9 @@ import  Filter  from "./Filter.js"
 import PersonForm from "./PersonForm.js"
 import Persons from "./Persons.js"
 import noteService from "./services/persons.js"
+import './index.css'
+
+
 
 
 
@@ -28,6 +31,20 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [filter, setFilter] = useState('')
+  const [serverMessage, setServerMessage] = useState('something happened...')
+  
+  const Notification = ({message}) => {
+    if (message === null) {
+      return null
+    }
+
+    return (
+      <div className="message">
+      {message}
+      </div>
+    )
+  }
+  
   
   const personsToShow = showAll
   ? persons
@@ -57,6 +74,12 @@ const App = () => {
         .deleteperson(id)
         .then(() => {
         setPersons(persons.filter(person => person.name !== name))
+        setServerMessage(
+          ` '${name}' was removed from server`
+        )
+        setTimeout(() => {
+          setServerMessage(null)
+        }, 5000)
      })
     }
   }
@@ -65,7 +88,10 @@ const App = () => {
     event.preventDefault()
 
     if (persons.find(person => person.name === newName)) {
-      alert (`${newName} is already added to phonebook`)
+      setServerMessage (`${newName} is already in phonebook`)
+      setTimeout(() => {
+          setServerMessage(null)
+        }, 5000)
     }
     else{
     const nameObject = {
@@ -78,6 +104,10 @@ const App = () => {
       .create(nameObject)
       .then(returnedName => {
       setPersons(persons.concat(returnedName))
+      setServerMessage (`${newName} successfully added to phonebook`)
+      setTimeout(() => {
+          setServerMessage(null)
+        }, 5000)
     })
    
     
@@ -90,6 +120,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={serverMessage} />
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <PersonForm addName={addName} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <Persons personsToShow={personsToShow} deleteperson={deleteperson} />
